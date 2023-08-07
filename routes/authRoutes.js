@@ -4,8 +4,6 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
 
-const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
-
 router.get('/', (req, res) => {
   res.json({
     message: 'User Route is working',
@@ -46,7 +44,7 @@ router.post('/login', async (req, res) => {
       {
         userId: user._id,
       },
-      JWT_SECRET_KEY
+      process.env.JWT_SECRET_KEY
     );
     res.json({
       token,
