@@ -109,5 +109,31 @@ router.post('/sendotp', async (req, res) => {
 
 router.post('/changepassword', async (req, res) => {
   const { email, otp, newpassword } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({
+        message: 'User not found',
+      });
+    }
+    if (user.otp != otp) {
+      return res.status(400).json({
+        message: 'Invalid OTP',
+      });
+    }
+
+    user.password = newpassword;
+    user.otp = null;
+    await user.save();
+
+    res.json({
+      message: 'Password changed successfully',
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
 });
 module.exports = router;
